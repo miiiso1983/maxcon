@@ -36,6 +36,8 @@ return [
     'regulatory_affairs' => 'Regulatory Affairs',
     'medical_representatives' => 'Medical Representatives',
     'medical_reps' => 'Medical Reps',
+    'sales_representatives' => 'Sales Representatives',
+    'sales_reps' => 'Sales Reps',
     'ai' => 'Artificial Intelligence',
     'artificial_intelligence' => 'Artificial Intelligence',
     

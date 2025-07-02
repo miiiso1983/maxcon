@@ -4,12 +4,14 @@ namespace App\Models;
 
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
+use App\Traits\TenantScoped;
 use Illuminate\Database\Eloquent\Relations\HasMany;
 use Carbon\Carbon;
 
+
 class Company extends Model
 {
-    use HasFactory;
+    use HasFactory, TenantScoped;
 
     protected $fillable = [
         'company_code',
@@ -38,11 +40,11 @@ class Company extends Model
     ];
 
     protected $casts = [
-        'registration_date' => 'date',
-        'expiry_date' => 'date',
-        'license_issue_date' => 'date',
-        'license_expiry_date' => 'date',
-        'gmp_expiry_date' => 'date',
+        'registration_date' => 'datetime',
+        'expiry_date' => 'datetime',
+        'license_issue_date' => 'datetime',
+        'license_expiry_date' => 'datetime',
+        'gmp_expiry_date' => 'datetime',
         'documents' => 'array',
     ];
 
@@ -75,7 +77,7 @@ class Company extends Model
      */
     public function isExpired(): bool
     {
-        return $this->expiry_date && $this->expiry_date->isPast();
+        return $this->expiry_date && $this->expiry_date < now();
     }
 
     /**
@@ -83,7 +85,7 @@ class Company extends Model
      */
     public function isLicenseExpired(): bool
     {
-        return $this->license_expiry_date && $this->license_expiry_date->isPast();
+        return $this->license_expiry_date && $this->license_expiry_date < now();
     }
 
     /**
@@ -91,7 +93,7 @@ class Company extends Model
      */
     public function isGmpExpired(): bool
     {
-        return $this->gmp_expiry_date && $this->gmp_expiry_date->isPast();
+        return $this->gmp_expiry_date && $this->gmp_expiry_date < now();
     }
 
     /**

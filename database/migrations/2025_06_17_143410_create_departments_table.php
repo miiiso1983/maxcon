@@ -24,7 +24,7 @@ return new class extends Migration
             $table->enum('status', ['active', 'inactive'])->default('active');
             $table->timestamps();
 
-            $table->foreign('manager_id')->references('id')->on('employees')->onDelete('set null');
+            // Foreign key will be added later to avoid circular reference
         });
     }
 

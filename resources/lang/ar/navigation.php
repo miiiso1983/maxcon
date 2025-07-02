@@ -36,6 +36,8 @@ return [
     'regulatory_affairs' => 'الشؤون التنظيمية',
     'medical_representatives' => 'المندوبين الطبيين',
     'medical_reps' => 'المندوبين الطبيين',
+    'sales_representatives' => 'المندوبين التجاريين',
+    'sales_reps' => 'المندوبين التجاريين',
     'ai' => 'الذكاء الاصطناعي',
     'artificial_intelligence' => 'الذكاء الاصطناعي',
     'backup' => 'النسخ الاحتياطية',

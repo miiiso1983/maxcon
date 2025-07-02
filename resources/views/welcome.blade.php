@@ -30,12 +30,25 @@
                         >
                             Dashboard
                         </a>
+                        <a
+                            href="{{ route('admin.login') }}"
+                            class="inline-block px-5 py-1.5 text-white bg-[#1b1b18] dark:bg-[#eeeeec] dark:text-[#1C1C1A] border border-transparent hover:bg-black dark:hover:bg-white rounded-sm text-sm leading-normal"
+                        >
+                            تسجيل دخول المديرين
+                        </a>
                     @else
                         <a
                             href="{{ route('login') }}"
                             class="inline-block px-5 py-1.5 dark:text-[#EDEDEC] text-[#1b1b18] border border-transparent hover:border-[#19140035] dark:hover:border-[#3E3E3A] rounded-sm text-sm leading-normal"
                         >
                             Log in
+                        </a>
+
+                        <a
+                            href="{{ route('admin.login') }}"
+                            class="inline-block px-5 py-1.5 text-white bg-[#1b1b18] dark:bg-[#eeeeec] dark:text-[#1C1C1A] border border-transparent hover:bg-black dark:hover:bg-white rounded-sm text-sm leading-normal"
+                        >
+                            تسجيل دخول المديرين
                         </a>
 
                         @if (Route::has('register'))
@@ -273,5 +286,16 @@
         @if (Route::has('login'))
             <div class="h-14.5 hidden lg:block"></div>
         @endif
+
+        <!-- رابط تسجيل دخول المديرين -->
+        <div class="fixed bottom-4 right-4 z-50">
+            <a href="{{ route('admin.login') }}"
+               class="inline-flex items-center px-6 py-3 bg-[#1b1b18] dark:bg-[#eeeeec] text-white dark:text-[#1C1C1A] rounded-lg shadow-lg hover:bg-black dark:hover:bg-white transition-all duration-300 text-sm font-medium">
+                <svg class="w-5 h-5 mr-2" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 15v2m-6 4h12a2 2 0 002-2v-6a2 2 0 00-2-2H6a2 2 0 00-2 2v6a2 2 0 002 2zm10-10V7a4 4 0 00-8 0v4h8z"></path>
+                </svg>
+                تسجيل دخول المديرين
+            </a>
+        </div>
     </body>
 </html>

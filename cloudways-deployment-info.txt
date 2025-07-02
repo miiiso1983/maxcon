@@ -1,0 +1,67 @@
+=== معلومات النشر على Cloudways ===
+تاريخ التحضير: Wed Jul  2 14:24:01 +03 2025
+إصدار PHP: PHP 8.4.6 (cli) (built: Apr  8 2025 19:55:31) (NTS)
+إصدار Laravel: Laravel Framework 11.45.1
+
+=== متطلبات الخادم ===
+- PHP 8.1+
+- MySQL 8.0+
+- Memory Limit: 512MB+
+- Max Execution Time: 300s
+- Upload Max Size: 100MB
+
+=== الملفات المحضرة ===
+✅ .env.cloudways - إعدادات الإنتاج
+✅ composer.json - محسن للإنتاج
+✅ public/.htaccess - أمان وأداء محسن
+✅ المجلدات المطلوبة
+✅ الصلاحيات مضبوطة
+
+=== خطوات النشر على Cloudways ===
+1. إنشاء خادم جديد في Cloudways
+2. إعداد التطبيق (PHP 8.1+)
+3. رفع الملفات عبر Git أو SFTP
+4. تحديث .env بمعلومات قاعدة البيانات
+5. تشغيل الأوامر المطلوبة
+6. إعداد SSL Certificate
+7. تفعيل النسخ الاحتياطية
+
+=== الأوامر المطلوبة على الخادم ===
+composer install --no-dev --optimize-autoloader
+php artisan key:generate
+php artisan migrate --force
+php artisan db:seed --force
+php artisan config:cache
+php artisan route:cache
+php artisan view:cache
+php artisan storage:link
+chmod -R 755 storage bootstrap/cache
+
+=== إعدادات قاعدة البيانات ===
+يجب تحديث هذه القيم في .env:
+DB_HOST=من_cloudways_panel
+DB_DATABASE=pharmacy_erp
+DB_USERNAME=من_cloudways_panel
+DB_PASSWORD=من_cloudways_panel
+
+=== روابط مهمة بعد النشر ===
+- الموقع الرئيسي: https://yourdomain.com
+- تسجيل الدخول: https://yourdomain.com/login
+- لوحة السوبر أدمن: https://yourdomain.com/super-admin/login
+- فحص النشر: https://yourdomain.com/cloudways-check.php
+
+=== بيانات تسجيل الدخول الافتراضية ===
+السوبر أدمن:
+- البريد: superadmin@pharmacy-erp.com
+- كلمة المرور: SuperAdmin@2024
+
+المستخدم العادي:
+- البريد: atheer@rama.com
+- كلمة المرور: Manager@2024
+
+=== نصائح مهمة ===
+- استخدم Git Deployment للتحديثات التلقائية
+- فعل النسخ الاحتياطية التلقائية
+- راقب الأداء باستمرار
+- استخدم CDN لتحسين السرعة
+- فعل SSL Certificate

@@ -4,12 +4,13 @@ namespace App\Models;
 
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
+use App\Traits\TenantScoped;
 use Illuminate\Database\Eloquent\Relations\HasMany;
 use Illuminate\Database\Eloquent\Relations\BelongsTo;
 
 class Account extends Model
 {
-    use HasFactory;
+    use HasFactory, TenantScoped;
 
     protected $fillable = [
         'account_code',
@@ -87,7 +88,7 @@ class Account extends Model
      */
     public function updateCurrentBalance(): void
     {
-        $this->current_balance = $this->calculateCurrentBalance();
+        $this->current_balance = (float) $this->calculateCurrentBalance();
         $this->save();
     }
 

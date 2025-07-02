@@ -6,10 +6,7 @@ use App\Http\Controllers\Controller;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Hash;
-use Illuminate\Support\Facades\Validator;
-use Illuminate\Support\Facades\RateLimiter;
 use Illuminate\Support\Facades\Log;
-use Illuminate\Validation\ValidationException;
 use App\Models\User;
 
 class AuthController extends Controller
@@ -24,14 +21,6 @@ class AuthController extends Controller
 
     public function login(Request $request)
     {
-        // التحقق من Rate Limiting
-        $key = 'login.' . $request->ip();
-        if (RateLimiter::tooManyAttempts($key, 5)) {
-            $seconds = RateLimiter::availableIn($key);
-            throw ValidationException::withMessages([
-                'email' => "تم تجاوز عدد المحاولات المسموح. حاول مرة أخرى بعد {$seconds} ثانية.",
-            ]);
-        }
 
         // التحقق من صحة البيانات
         $request->validate([
@@ -60,7 +49,6 @@ class AuthController extends Controller
                     'user_agent' => $request->userAgent(),
                 ]);
 
-                RateLimiter::hit($key, 300); // 5 دقائق
                 return back()->withErrors(['email' => 'حسابك غير مفعل. يرجى التواصل مع الإدارة.']);
             }
 
@@ -72,8 +60,7 @@ class AuthController extends Controller
                 'user_agent' => $request->userAgent(),
             ]);
 
-            // إعادة تعيين Rate Limiter عند النجاح
-            RateLimiter::clear($key);
+
 
             $request->session()->regenerate();
 
@@ -88,8 +75,7 @@ class AuthController extends Controller
             'user_agent' => $request->userAgent(),
         ]);
 
-        // زيادة عداد المحاولات
-        RateLimiter::hit($key, 300); // 5 دقائق
+
 
         return back()->withErrors([
             'email' => 'بيانات الدخول غير صحيحة.',
@@ -128,9 +114,9 @@ class AuthController extends Controller
     {
         // التحقق من Rate Limiting للتسجيل
         $key = 'register.' . $request->ip();
-        if (RateLimiter::tooManyAttempts($key, 3)) {
-            $seconds = RateLimiter::availableIn($key);
-            throw ValidationException::withMessages([
+        if (\Illuminate\Support\Facades\RateLimiter::tooManyAttempts($key, 3)) {
+            $seconds = \Illuminate\Support\Facades\RateLimiter::availableIn($key);
+            throw \Illuminate\Validation\ValidationException::withMessages([
                 'email' => "تم تجاوز عدد محاولات التسجيل المسموح. حاول مرة أخرى بعد {$seconds} ثانية.",
             ]);
         }
@@ -191,7 +177,7 @@ class AuthController extends Controller
             Auth::login($user);
 
             // إعادة تعيين Rate Limiter عند النجاح
-            RateLimiter::clear($key);
+            \Illuminate\Support\Facades\RateLimiter::clear($key);
 
             return redirect()->route('dashboard')
                 ->with('success', "تم إنشاء الحساب بنجاح! مرحباً بك {$user->name}");
@@ -205,7 +191,7 @@ class AuthController extends Controller
             ]);
 
             // زيادة عداد المحاولات
-            RateLimiter::hit($key, 600); // 10 دقائق
+            \Illuminate\Support\Facades\RateLimiter::hit($key, 600); // 10 دقائق
 
             return back()->withErrors([
                 'email' => 'حدث خطأ أثناء إنشاء الحساب. يرجى المحاولة مرة أخرى.',

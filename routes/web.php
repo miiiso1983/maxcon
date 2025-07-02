@@ -29,6 +29,13 @@ Route::get('/language-test', function () {
     return view('language-test');
 })->name('language.test');
 
+// Route لتحديث CSRF token
+Route::get('/csrf-token', function() {
+    return response()->json([
+        'token' => csrf_token()
+    ]);
+})->name('csrf.token');
+
 Route::get('/test-permissions', function () {
     return view('test-permissions');
 })->name('test.permissions')->middleware('auth');
@@ -80,10 +87,41 @@ Route::get('/test-collection-document/{id}', function ($id) {
 // مسار التحقق من الفواتير (متاح للجميع)
 Route::get('/invoices/{id}/verify', [\App\Http\Controllers\Web\InvoiceController::class, 'verify'])->name('invoices.verify');
 
-// إعادة توجيه الصفحة الرئيسية إلى تسجيل الدخول
+// إعادة توجيه الصفحة الرئيسية إلى تسجيل الدخول الموحد
 Route::get('/', function () {
     return redirect()->route('login');
 });
+
+// صفحة الوصول لنظام الإدارة
+Route::get('/admin-access', function () {
+    return view('admin-access');
+})->name('admin.access');
+
+// نظام تسجيل الدخول الموحد
+Route::get('/login', function () {
+    return view('new-login');
+})->name('login');
+Route::post('/login/user', [App\Http\Controllers\Auth\UnifiedAuthController::class, 'loginUser'])->name('login.submit');
+Route::post('/login/admin', [App\Http\Controllers\Auth\UnifiedAuthController::class, 'loginAdmin'])->name('admin.login.submit');
+Route::post('/logout', [App\Http\Controllers\Auth\UnifiedAuthController::class, 'logout'])->name('logout');
+
+// صفحة اختبار تسجيل الدخول
+Route::get('/test-login', function () {
+    return view('test-login');
+});
+
+// صفحة تسجيل الدخول الموحد المبسطة
+Route::get('/simple-login', function () {
+    return view('simple-unified-login');
+});
+
+// صفحة تشخيص تسجيل الدخول
+Route::get('/debug-login', function () {
+    return view('debug-login');
+});
+
+// تضمين مسارات السوبر أدمن المستقلة
+require __DIR__.'/super-admin.php';
 
 // مسارات المصادقة
 Route::middleware('guest')->group(function () {
@@ -97,6 +135,12 @@ Route::middleware('guest')->group(function () {
 Route::middleware('auth')->group(function () {
     Route::post('/logout', [AuthController::class, 'logout'])->name('logout');
     Route::get('/dashboard', [DashboardController::class, 'index'])->name('dashboard');
+
+    // Sales Representatives
+    Route::get('/sales-representatives/dashboard', [App\Http\Controllers\SalesRepresentativeController::class, 'dashboard'])->name('sales-representatives.dashboard');
+    Route::get('/api/visits', [App\Http\Controllers\SalesRepresentativeController::class, 'getVisits'])->name('api.visits');
+    Route::get('/sales-representatives/export', [App\Http\Controllers\SalesRepresentativeController::class, 'export'])->name('sales-representatives.export');
+    Route::resource('sales-representatives', App\Http\Controllers\SalesRepresentativeController::class);
 
     // مسارات الطلبات
     Route::prefix('orders')->name('orders.')->group(function () {
@@ -733,7 +777,7 @@ Route::prefix('api/search')->group(function () {
             'results' => $orders->map(function($order) {
                 return [
                     'id' => $order->id,
-                    'text' => $order->order_number . ' - ' . ($order->customer->name ?? 'غير محدد') . ' (' . number_format($order->total_amount, 0) . ' د.ع)',
+                    'text' => $order->order_number . ' - ' . ($order->customer->name ?? 'غير محدد') . ' (' . number_format((float) $order->total_amount, 0) . ' د.ع)',
                     'order_number' => $order->order_number,
                     'customer_name' => $order->customer->name ?? 'غير محدد',
                     'total_amount' => $order->total_amount
@@ -849,4 +893,5 @@ Route::get('/api/advanced-reports/export-excel-test', function (Illuminate\Http\
     }
 });
 
-
+// تضمين مسارات لوحة التحكم الرئيسية (Super Admin)
+require __DIR__.'/admin.php';

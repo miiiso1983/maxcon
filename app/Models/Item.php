@@ -7,7 +7,7 @@ use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Relations\BelongsTo;
 use Illuminate\Database\Eloquent\Relations\HasMany;
 use Illuminate\Database\Eloquent\SoftDeletes;
-use Carbon\Carbon;
+
 
 class Item extends Model
 {
@@ -46,7 +46,7 @@ class Item extends Model
         'stock_quantity' => 'integer',
         'min_stock_level' => 'integer',
         'max_stock_level' => 'integer',
-        'expiry_date' => 'date',
+        'expiry_date' => 'datetime',
         'is_active' => 'boolean',
         'weight' => 'decimal:3',
     ];
@@ -112,12 +112,12 @@ class Item extends Model
     // Accessors
     public function getFormattedPurchasePriceAttribute(): string
     {
-        return number_format($this->purchase_price, 2) . ' د.ع';
+        return number_format((float) $this->purchase_price, 2) . ' د.ع';
     }
 
     public function getFormattedSellingPriceAttribute(): string
     {
-        return number_format($this->selling_price, 2) . ' د.ع';
+        return number_format((float) $this->selling_price, 2) . ' د.ع';
     }
 
     public function getProfitMarginAttribute(): float

@@ -13,6 +13,11 @@ class DatabaseSeeder extends Seeder
      */
     public function run(): void
     {
+        // تشغيل seeder النظام متعدد المستأجرين
+        $this->call([
+            MultiTenantSystemSeeder::class,
+        ]);
+
         // User::factory(10)->create();
 
         User::factory()->create([

@@ -35,14 +35,35 @@
             min-height: 100vh;
             background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
             box-shadow: 2px 0 10px rgba(0,0,0,0.1);
+            position: relative;
+            overflow: hidden;
+        }
+
+        .sidebar::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 0;
+            right: 0;
+            bottom: 0;
+            background: linear-gradient(45deg,
+                rgba(255,215,0,0.05) 0%,
+                transparent 25%,
+                transparent 75%,
+                rgba(255,215,0,0.05) 100%);
+            pointer-events: none;
         }
         
         .sidebar .nav-link {
-            color: rgba(255,255,255,0.8);
+            color: rgba(255,255,255,0.9);
             padding: 12px 20px;
             margin: 2px 0;
             border-radius: 8px;
             transition: all 0.3s ease;
+            font-weight: 500;
+            text-shadow: 0 1px 2px rgba(0,0,0,0.3);
+            position: relative;
+            z-index: 1;
         }
         
         .sidebar .nav-link:hover,
@@ -51,10 +72,99 @@
             background-color: rgba(255,255,255,0.1);
             transform: translateX(-5px);
         }
+
+        .sidebar .nav-link:hover i,
+        .sidebar .nav-link.active i {
+            color: #fff700 !important; /* لون ذهبي أفتح عند التمرير */
+            text-shadow: 0 0 10px rgba(255, 215, 0, 0.5);
+            transform: scale(1.1);
+            filter: drop-shadow(0 0 5px rgba(255, 215, 0, 0.8));
+        }
+
+        /* تأثير إضافي للأيقونات */
+        .sidebar .nav-link i {
+            filter: drop-shadow(0 1px 2px rgba(0, 0, 0, 0.3));
+        }
+
+        /* أيقونة النظام في الأعلى */
+        .sidebar h4 i {
+            color: #ffd700 !important;
+            text-shadow: 0 0 15px rgba(255, 215, 0, 0.6);
+            animation: glow 3s ease-in-out infinite alternate;
+        }
+
+        @keyframes glow {
+            from { text-shadow: 0 0 15px rgba(255, 215, 0, 0.6); }
+            to { text-shadow: 0 0 25px rgba(255, 215, 0, 0.9), 0 0 35px rgba(255, 215, 0, 0.6); }
+        }
         
         .sidebar .nav-link i {
             width: 20px;
             margin-left: 10px;
+            color: #ffd700 !important; /* لون ذهبي لجميع الأيقونات */
+            transition: all 0.3s ease;
+        }
+
+        /* تأثير خاص للمندوبين التجاريين */
+        .sidebar .nav-link[href*="sales-representatives"] {
+            background: linear-gradient(45deg, rgba(255,215,0,0.1), rgba(255,215,0,0.05));
+            border-right: 3px solid transparent;
+            transition: all 0.3s ease;
+            position: relative;
+        }
+
+        .sidebar .nav-link[href*="sales-representatives"]:hover,
+        .sidebar .nav-link[href*="sales-representatives"].active {
+            background: linear-gradient(45deg, rgba(255,215,0,0.2), rgba(255,215,0,0.1));
+            border-right: 3px solid #ffd700;
+            box-shadow: 0 2px 15px rgba(255,215,0,0.4);
+        }
+
+        .sidebar .nav-link[href*="sales-representatives"]::before {
+            content: '';
+            position: absolute;
+            left: 0;
+            top: 0;
+            bottom: 0;
+            width: 2px;
+            background: linear-gradient(to bottom, transparent, #ffd700, transparent);
+            opacity: 0;
+            transition: opacity 0.3s ease;
+        }
+
+        .sidebar .nav-link[href*="sales-representatives"]:hover::before,
+        .sidebar .nav-link[href*="sales-representatives"].active::before {
+            opacity: 1;
+        }
+
+
+
+        /* Badge للإشعارات */
+        .sidebar .nav-link .badge {
+            font-size: 0.7rem;
+            padding: 2px 6px;
+            border-radius: 10px;
+            background: linear-gradient(45deg, #ffd700, #ffed4e) !important;
+            color: #333 !important;
+            font-weight: bold;
+            border: 1px solid rgba(255, 215, 0, 0.5);
+            box-shadow: 0 2px 8px rgba(255, 215, 0, 0.3);
+            animation: pulse 2s infinite;
+        }
+
+        @keyframes pulse {
+            0% {
+                transform: scale(1);
+                box-shadow: 0 2px 8px rgba(255, 215, 0, 0.3);
+            }
+            50% {
+                transform: scale(1.1);
+                box-shadow: 0 4px 12px rgba(255, 215, 0, 0.5);
+            }
+            100% {
+                transform: scale(1);
+                box-shadow: 0 2px 8px rgba(255, 215, 0, 0.3);
+            }
         }
         
         .main-content {
@@ -361,6 +471,23 @@
                                 {{ __('navigation.customers') }}
                             </a>
 
+                            <a class="nav-link {{ request()->routeIs('sales-representatives.*') ? 'active' : '' }}" href="{{ route('sales-representatives.dashboard') }}">
+                                <i class="fas fa-handshake"></i>
+                                {{ __('navigation.sales_representatives') }}
+                                @php
+                                    $pendingReminders = 0;
+                                    if (Auth::check() && Auth::user()->tenant_id) {
+                                        $pendingReminders = \App\Models\CollectionReminder::where('tenant_id', Auth::user()->tenant_id)
+                                            ->where('status', 'pending')
+                                            ->whereDate('reminder_date', '<=', today())
+                                            ->count();
+                                    }
+                                @endphp
+                                @if($pendingReminders > 0)
+                                    <span class="badge bg-warning text-dark ms-auto">{{ $pendingReminders }}</span>
+                                @endif
+                            </a>
+
                             <a class="nav-link {{ request()->routeIs('finance.*') ? 'active' : '' }}" href="{{ route('finance.dashboard') }}">
                                 <i class="fas fa-chart-line"></i>
                                 {{ __('navigation.finance') }}
@@ -493,6 +620,36 @@
     <!-- Select2 Configuration -->
     <script src="{{ asset('js/select2-config.js') }}"></script>
 
+    <!-- CSRF Token Setup -->
+    <script>
+        // إعداد CSRF token لجميع AJAX requests
+        $.ajaxSetup({
+            headers: {
+                'X-CSRF-TOKEN': $('meta[name="csrf-token"]').attr('content')
+            }
+        });
+
+        // إعداد axios إذا كان متوفر
+        if (typeof axios !== 'undefined') {
+            axios.defaults.headers.common['X-CSRF-TOKEN'] = document.querySelector('meta[name="csrf-token"]').getAttribute('content');
+        }
+
+        // إعداد fetch API
+        const originalFetch = window.fetch;
+        window.fetch = function(url, options = {}) {
+            if (!options.headers) {
+                options.headers = {};
+            }
+            if (!options.headers['X-CSRF-TOKEN']) {
+                options.headers['X-CSRF-TOKEN'] = document.querySelector('meta[name="csrf-token"]').getAttribute('content');
+            }
+            return originalFetch(url, options);
+        };
+    </script>
+
     @stack('scripts')
+
+    <!-- CSRF Handler Script -->
+    <script src="{{ asset('js/csrf-handler.js') }}"></script>
 </body>
 </html>

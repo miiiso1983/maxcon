@@ -36,6 +36,8 @@ return [
     'regulatory_affairs' => 'کاروباری ڕێکخستن',
     'medical_representatives' => 'نوێنەرە پزیشکیەکان',
     'medical_reps' => 'نوێنەرە پزیشکیەکان',
+    'sales_representatives' => 'نوێنەرە بازرگانیەکان',
+    'sales_reps' => 'نوێنەرە بازرگانیەکان',
     'ai' => 'زیرەکی دەستکرد',
     'artificial_intelligence' => 'زیرەکی دەستکرد',
     

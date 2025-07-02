@@ -4,13 +4,15 @@ namespace App\Models;
 
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
+use App\Traits\TenantScoped;
 use Illuminate\Database\Eloquent\Relations\HasMany;
 
 class Customer extends Model
 {
-    use HasFactory;
+    use HasFactory, TenantScoped;
 
     protected $fillable = [
+        'tenant_id',
         'customer_code',
         'name',
         'business_name',
@@ -30,6 +32,8 @@ class Customer extends Model
         'last_payment_date',
         'status',
         'notes',
+        'country',
+        'tax_number',
     ];
 
     protected $casts = [
